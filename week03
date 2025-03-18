@@ -4,6 +4,8 @@
 미세먼지 센서는 아날로그 데이터를 사용하기에 해당 아날로그 데이터를 전압(0~1023)범위로 변환하여 표현한다.
 arduino, ptyhon에서 커넥팅하여 실행해 수치를 볼 수 있었고, influxdb에서 토큰을 활용하여 숫자가아닌 gui로 누적 데이터를 볼 수 있었다.
 
+
+*********python data********
 import serial
 from influxdb_client import InfluxDBClient
 import time
@@ -50,4 +52,34 @@ except KeyboardInterrupt:
     print("프로그램이 종료되었습니다.")
 finally:
     ser.close()
-    
+
+*********arduino*******
+int Vo = A0;
+int V_led = 12;
+
+float Vo_value = 0;
+float Voltage = 0;
+float dustDensity = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(V_led, OUTPUT);
+  pinMode(Vo, INPUT);
+}
+
+void loop() {
+  digitalWrite(V_led, LOW);
+  delayMicroseconds(280);
+  Vo_value = analogRead(40);
+  digitalWrite(V_led,HIGH);
+  delayMicroseconds(9600);
+
+  Voltage = Vo_value * 5.0 / 1023.0;
+  dustDensity = (Voltage - 0.5)/0.005;
+
+  Serial.print("dust=" );
+  Serial.println(dustDensity);
+
+  delay(1000);
+}
+
