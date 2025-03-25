@@ -1,0 +1,51 @@
+//arduino code week03
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#define TRIG 13
+#define ECHO 12
+// Set the LCD address to 0x27 for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 16, 2); // 안되면 0x3F로 시도해본다.
+//LiquidCrystal_I2C lcd(0x3F, 16, 2);
+
+int Vo = A0;
+int V_led = 7;
+
+float Vo_value = 0;
+float Voltage = 0;
+float dustDensity = 0;
+
+void setup() {
+    Serial.begin(9600);
+
+    pinMode(V_led, OUTPUT);
+    pinMode(Vo, INPUT);
+
+    pinMode(TRIG, OUTPUT);
+    pinMode(ECHO, INPUT);
+
+    lcd.init();        // I2C LCD 초기화
+    lcd.backlight();   // 백라이트 켜기
+    lcd.print("LCD init");
+    delay(2000);
+    lcd.clear();
+}
+
+void loop() {
+    long duration, distance;
+    digitalWrite(TRIG, LOW);
+    delayMicroseconds(2000);
+    digitalWrite(TRIG, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG, LOW);
+
+    duration = pulseIn (ECHO, HIGH);
+    distance = duration *17 / 1000;
+
+    lcd.setCursor(0,0);
+    lcd.print(distance);
+    lcd.print("cm");
+    delay(1000);
+    lcd.clear();
+
+}
